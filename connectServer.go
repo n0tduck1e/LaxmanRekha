@@ -11,6 +11,7 @@ type server struct {
 	IP       string
 	SShPort  string
 	SShKey   string
+	SSHPass  string
 	Config   *ssh.ClientConfig
 }
 
@@ -24,9 +25,10 @@ func (client *server) askDetails() {
 	fmt.Println("Please Enter the following details")
 
 	client.Username = "duckie"
-	client.IP = "127.0.0.1"
+	client.IP = "172.17.0.2"
 	client.SShPort = "22"
-	client.createSession("assslayer69")
+	client.SSHPass = "assslayer69"
+	client.createSession(client.SSHPass)
 }
 
 func (client *server) createSession(password string) {
@@ -38,12 +40,9 @@ func (client *server) createSession(password string) {
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
 	conn, err := ssh.Dial("tcp", client.IP+":"+client.SShPort, client.Config)
+	defer conn.Close()
 	if err != nil {
 		panic(err)
 	}
-	sess, err := conn.NewSession()
-	if err != nil {
-		panic(err)
-	}
-	newSSHSess(sess, client)
+	newSSHSess(conn, client)
 }

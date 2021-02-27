@@ -11,9 +11,7 @@ import (
 	"golang.org/x/crypto/ssh"
 )
 
-func generateKeyPair(id_rsa, id_rsa_pub string) {
-	savePrivateFileTo := "id_rsa"
-	savePublicFileTo := "id_rsa.pub"
+func generateKeyPair(savePrivateFileTo, savePublicFileTo string) []byte {
 	bitSize := 4096
 
 	privateKey, err := generatePrivateKey(bitSize)
@@ -37,6 +35,7 @@ func generateKeyPair(id_rsa, id_rsa_pub string) {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
+	return publicKeyBytes
 }
 
 // generatePrivateKey creates a RSA Private Key of specified byte size
