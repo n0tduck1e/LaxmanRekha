@@ -5,6 +5,7 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
+	"strings"
 
 	"golang.org/x/crypto/ssh"
 )
@@ -48,9 +49,44 @@ func (ssh *sshSess) DeployFirewall() {
 	ssh.Cmd("(ls /sbin/iptables || which iptables) || apt install iptables")
 	fmt.Println("Configuring Iptables on the remote box...")
 
-	cmd := fmt.Sprintf("echo %v | sudo -S iptables -L", ssh.client.SSHPass)
+	//cmd := fmt.Sprintf("echo %v | sudo -S iptables -L", ssh.client.SSHPass)
+	cmd := "ss -plunt | awk '{print $5}' | grep -v -E '(Local|127.0.0.1)' | awk -F':' '{print $NF}' | sort -u"
 	tmp, _ := ssh.Cmd(cmd)
-	fmt.Println(tmp)
+	tmp = strings.Trim(tmp, "\r\n")
+	ports := strings.Split(tmp, "\n")
+
+	//Basic IPTable Setup
+	iptableRules := []string{
+		//Dont break existing connections
+		"iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT",
+		"iptables -A OUTPUT -m conntrack --ctstate ESTABLISHED -j ACCEPT",
+		//Allow Anything on the localhost; aaye its the home afterall
+		"iptables -A INPUT -i lo -j ACCEPT",
+		"iptables -A OUTPUT -o lo -j ACCEPT",
+		// Set default policies
+		"iptables --policy INPUT DROP",
+		"iptables --policy OUTPUT DROP",
+		"iptables --policy FORWARD DROP",
+	}
+
+	for _, i := range iptableRules {
+		cmd = fmt.Sprintf("echo %v | sudo -S %v", ssh.client.SSHPass, i)
+		fmt.Println("Running following commands")
+		fmt.Println(i)
+		ssh.Cmd(cmd)
+	}
+
+	//poking holes in for listening ports now
+	for _, i := range ports {
+		pokeHole := fmt.Sprintf("echo %v | sudo -S iptables -A INPUT -p tcp --dport %v -m state --state NEW -j ACCEPT", ssh.client.SSHPass, i)
+		ssh.Cmd(pokeHole)
+		if i == "22" || i == "21" {
+			cmd := fmt.Sprintf("echo %v | sudo -S iptables -A INPUT -p tcp --dport %v -m state --state NEW -m recent --update --seconds 60 --hitcount 4 -j DROP", ssh.client.SShPort, i)
+			ssh.Cmd(cmd)
+			cmd = fmt.Sprintf("echo %v | sudo -S iptables -A INPUT -p tcp --dport %v -m state --state NEW -m recent --set", ssh.client.SShPort, i)
+			ssh.Cmd(cmd)
+		}
+	}
 
 }
 
@@ -87,7 +123,11 @@ func (ssh *sshSess) Cmd(cmd ...string) (string, error) {
 	session.Run(command)
 	errorString, _ := ioutil.ReadAll(stderr)
 	output, _ := ioutil.ReadAll(stdout)
-	err = fmt.Errorf("%s", string(errorString))
+	if len(errorString) > 2 {
+		err = fmt.Errorf("%s", string(errorString))
+	} else {
+		err = nil
+	}
 
 	return string(output), err
 }
