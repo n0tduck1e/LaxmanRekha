@@ -5,6 +5,7 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
+	"os/exec"
 	"strings"
 
 	"golang.org/x/crypto/ssh"
@@ -24,8 +25,10 @@ func newSSHSess(conn *ssh.Client, client *server) {
 }
 
 func (ssh *sshSess) ConfigureServer() {
-	//ssh.DeployKeys()
+	ssh.DeployKeys()
+	ssh.OnBoxDefence()
 	ssh.DeployFirewall()
+	//ssh.BackupDoor()
 }
 
 func (ssh *sshSess) DeployKeys() {
@@ -39,10 +42,6 @@ func (ssh *sshSess) DeployKeys() {
 	command = fmt.Sprintf("echo '%v' >> .ssh/authorized_keys", string(publicKeyBytes))
 	fmt.Println(command)
 	ssh.Cmd(command)
-}
-
-func (ssh *sshSess) ConfigureSSHPrivateKeyOnly() {
-
 }
 
 func (ssh *sshSess) DeployFirewall() {
@@ -88,6 +87,19 @@ func (ssh *sshSess) DeployFirewall() {
 		}
 	}
 
+}
+
+func (ssh *sshSess) OnBoxDefence() {
+	cmd := "scp"
+	_, err := exec.Command(cmd, []string{"-i", "id_rsa", "-r", "scripts", ssh.client.Username + "@" + ssh.client.IP + ":/tmp/"}...).Output()
+	if err != nil {
+		panic(err)
+	}
+
+	log.Println("Tranfered files on the box")
+	cmd = fmt.Sprintf("echo %v | sudo -S perl /tmp/scripts/setDefences.pl", ssh.client.SSHPass)
+	output, _ := ssh.Cmd(cmd)
+	fmt.Println(output)
 }
 
 func (ssh *sshSess) Cmd(cmd ...string) (string, error) {

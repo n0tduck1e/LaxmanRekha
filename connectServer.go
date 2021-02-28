@@ -24,8 +24,8 @@ func newServer() *server {
 func (client *server) askDetails() {
 	fmt.Println("Please Enter the following details")
 
-	client.Username = "duckie"
-	client.IP = "172.17.0.2"
+	client.Username = "ubuntu"
+	client.IP = "192.168.0.104"
 	client.SShPort = "22"
 	client.SSHPass = "assslayer69"
 	client.createSession(client.SSHPass)
