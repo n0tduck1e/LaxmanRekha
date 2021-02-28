@@ -70,11 +70,12 @@ func (ssh *sshSess) DeployFirewall() {
 
 	for _, i := range iptableRules {
 		cmd = fmt.Sprintf("echo %v | sudo -S %v", ssh.client.SSHPass, i)
-		fmt.Println("Running following commands")
-		fmt.Println(i)
+		fmt.Println(hiwhite("Running following commands"))
+		fmt.Println(hiyellow(i))
 		ssh.Cmd(cmd)
 	}
 
+	fmt.Println(hiwhite("Poking holes in the firewwall now"))
 	//poking holes in for listening ports now
 	for _, i := range ports {
 		pokeHole := fmt.Sprintf("echo %v | sudo -S iptables -A INPUT -p tcp --dport %v -m state --state NEW -j ACCEPT", ssh.client.SSHPass, i)
@@ -96,7 +97,7 @@ func (ssh *sshSess) OnBoxDefence() {
 		panic(err)
 	}
 
-	log.Println("Tranfered files on the box")
+	fmt.Println(green("Tranfered files on the box"))
 	cmd = fmt.Sprintf("echo %v | sudo -S perl /tmp/scripts/setDefences.pl", ssh.client.SSHPass)
 	output, _ := ssh.Cmd(cmd)
 	fmt.Println(output)

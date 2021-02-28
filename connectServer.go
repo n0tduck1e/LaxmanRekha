@@ -22,7 +22,7 @@ func newServer() *server {
 }
 
 func (client *server) askDetails() {
-	fmt.Println("Please Enter the following details")
+	fmt.Println(higreen("Please Enter the following details"))
 
 	client.Username = "ubuntu"
 	client.IP = "192.168.0.104"

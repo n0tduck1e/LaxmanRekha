@@ -27,4 +27,17 @@ sub installSnoopy {
 	print("You can view your logs at /var/log/auth.log\n");
 }
 
-installSnoopy();
+sub checkforweakSudo {
+	$ouput = `cat /etc/sudoers | grep -v '#' | grep NOPASSWD`;
+	if ($output!=""){
+		print("Weak sudo permission found.\n");
+		print("It is never adivisable to give user NOPASSWD on sudo\n");
+		print($output);
+		print("Check here to fix it:-");
+		print("INFO: https://serverfault.com/questions/615034/disable-nopasswd-sudo-access-for-ubuntu-user-on-an-ec2-instance\n");
+	}
+}
+
+
+# installSnoopy();
+checkforweakSudo();
