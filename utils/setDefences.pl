@@ -52,4 +52,4 @@ sub checkforweakSudo {
 
 # installSnoopy();
 checkforweakSudo();
-print("$YELLOW fuck bruh$YELLOW")
+# installClamav();

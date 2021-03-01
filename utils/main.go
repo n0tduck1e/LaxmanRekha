@@ -14,6 +14,7 @@ func setCronJob() {
 	if err != nil {
 		panic(err)
 	}
+	// Runs EveryDay at 2:30 am, when the internet traffic is low.
 	if _, err := f.WriteString("\n30 2 * * * /opt/laxmanRekha/util scan > /var/log/laxmanRekha.log\n"); err != nil {
 		panic(err)
 	}
