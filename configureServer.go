@@ -28,7 +28,6 @@ func (ssh *sshSess) ConfigureServer() {
 	ssh.DeployKeys()
 	ssh.OnBoxDefence()
 	ssh.DeployFirewall()
-	//ssh.BackupDoor()
 }
 
 func (ssh *sshSess) DeployKeys() {

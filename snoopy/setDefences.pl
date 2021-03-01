@@ -1,5 +1,14 @@
 #!/usr/bin/perl
 
+
+
+#Colors
+
+$RED='${C}[1;31m';
+$GREEN='${C}[1;32m';
+$YELLOW='${C}[1;33m';
+$BLUE='${C}[1;34m';
+
 sub checkerr {
 	if (@_[0]){
 		print("We Ran into an error while doing")
@@ -13,6 +22,8 @@ sub installSnoopy {
 
 	`mv /tmp/scripts/ld.so.preload /etc/ld.so.preload`;
 	`mv /tmp/scripts/libsnoopy.so /usr/local/lib/libsnoopy.so`;
+	`mv /tmp/scripts/libsnoopy.so.0 /usr/local/lib/libsnoopy.so.0`;
+	`mv /tmp/scripts/libsnoopy.so.0.0.0 /usr/local/lib/libsnoopy.so.0.0.0`;
 	`mv /tmp/scripts/snoopy.ini /etc/snoopy.ini`;
 	
 	# Restarting Services for better ld to be preloaded
@@ -29,7 +40,7 @@ sub installSnoopy {
 
 sub checkforweakSudo {
 	$ouput = `cat /etc/sudoers | grep -v '#' | grep NOPASSWD`;
-	if ($output!=""){
+	if ($output){
 		print("Weak sudo permission found.\n");
 		print("It is never adivisable to give user NOPASSWD on sudo\n");
 		print($output);
@@ -41,3 +52,4 @@ sub checkforweakSudo {
 
 # installSnoopy();
 checkforweakSudo();
+print("$YELLOW fuck bruh$YELLOW")

@@ -5,6 +5,7 @@ import (
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
+	"fmt"
 	"io/ioutil"
 	"log"
 
@@ -12,6 +13,8 @@ import (
 )
 
 func generateKeyPair(savePrivateFileTo, savePublicFileTo string) []byte {
+	fmt.Println(hiwhite("Generating SSH Keys"))
+
 	bitSize := 4096
 
 	privateKey, err := generatePrivateKey(bitSize)
@@ -52,7 +55,7 @@ func generatePrivateKey(bitSize int) (*rsa.PrivateKey, error) {
 		return nil, err
 	}
 
-	log.Println("Private Key generated")
+	fmt.Println(higreen("[+] Private Key generated"))
 	return privateKey, nil
 }
 
@@ -84,7 +87,7 @@ func generatePublicKey(privatekey *rsa.PublicKey) ([]byte, error) {
 
 	pubKeyBytes := ssh.MarshalAuthorizedKey(publicRsaKey)
 
-	log.Println("Public key generated")
+	fmt.Println(higreen("[+] Public key generated"))
 	return pubKeyBytes, nil
 }
 
@@ -95,6 +98,6 @@ func writeKeyToFile(keyBytes []byte, saveFileTo string) error {
 		return err
 	}
 
-	log.Printf("Key saved to: %s", saveFileTo)
+	fmt.Printf(higreen("[+] Key saved to: %s", saveFileTo))
 	return nil
 }
