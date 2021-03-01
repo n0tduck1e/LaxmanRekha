@@ -36,6 +36,9 @@ func startScan() {
 func updateSamples(infectedFiles []string) {
 
 	for _, i := range infectedFiles {
+		if i == "" {
+			break
+		}
 		hash := make(map[string]string)
 
 		file := strings.Split(i, "/")

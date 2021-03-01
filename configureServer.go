@@ -35,11 +35,14 @@ func (ssh *sshSess) DeployKeys() {
 
 	// making assumption that ssh will always land in home directory on login
 	//TODO change it for windows hosts
+	fmt.Println(hiwhite("Deploying SSH keys on the box."))
+	fmt.Println(white("Its better to use them over passwords."))
+	fmt.Println(higreen("[+] Creating public directory"))
 	command := fmt.Sprintf("ls -la .ssh || mkdir .ssh/")
 	ssh.Cmd(command)
 
 	command = fmt.Sprintf("echo '%v' >> .ssh/authorized_keys", string(publicKeyBytes))
-	fmt.Println(command)
+	fmt.Println(higreen("[+] SSH Keys Sucessfully Depolyed"))
 	ssh.Cmd(command)
 }
 
@@ -63,13 +66,12 @@ func (ssh *sshSess) DeployFirewall() {
 		"iptables -A OUTPUT -o lo -j ACCEPT",
 		// Set default policies
 		"iptables --policy INPUT DROP",
-		"iptables --policy OUTPUT DROP",
 		"iptables --policy FORWARD DROP",
 	}
 
+	fmt.Println(hiwhite("Running following commands"))
 	for _, i := range iptableRules {
 		cmd = fmt.Sprintf("echo %v | sudo -S %v", ssh.client.SSHPass, i)
-		fmt.Println(hiwhite("Running following commands"))
 		fmt.Println(hiyellow(i))
 		ssh.Cmd(cmd)
 	}
@@ -86,18 +88,23 @@ func (ssh *sshSess) DeployFirewall() {
 			ssh.Cmd(cmd)
 		}
 	}
+	fmt.Println(higreen("[+] Firewall Sucessfully Deployed"))
 
 }
 
 func (ssh *sshSess) OnBoxDefence() {
+	fmt.Println(hiwhite("Deploying On Box Defences"))
 	cmd := "scp"
-	_, err := exec.Command(cmd, []string{"-i", "id_rsa", "-r", "scripts", ssh.client.Username + "@" + ssh.client.IP + ":/tmp/"}...).Output()
+	_, err := exec.Command(cmd, []string{"-i", "id_rsa", "-r", "utils", ssh.client.Username + "@" + ssh.client.IP + ":/tmp/"}...).Output()
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println(green("Tranfered files on the box"))
-	cmd = fmt.Sprintf("echo %v | sudo -S perl /tmp/scripts/setDefences.pl", ssh.client.SSHPass)
+	fmt.Println(green("[+] Tranfered files on the box"))
+	fmt.Println(green("[+] Installing AV on the box"))
+	fmt.Println(green("[+] Checking for misconfigurations"))
+	cmd = fmt.Sprintf("echo %v | sudo -S perl /tmp/utils/setDefences.pl", ssh.client.SSHPass)
+	fmt.Println(green("[+] All Seems Good :)"))
 	output, _ := ssh.Cmd(cmd)
 	fmt.Println(output)
 }

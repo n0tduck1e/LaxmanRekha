@@ -98,6 +98,7 @@ func writeKeyToFile(keyBytes []byte, saveFileTo string) error {
 		return err
 	}
 
-	fmt.Printf(higreen("[+] Key saved to: %s", saveFileTo))
+	str := fmt.Sprintf("[+] Key saved to: %v", saveFileTo)
+	fmt.Println(higreen(str))
 	return nil
 }

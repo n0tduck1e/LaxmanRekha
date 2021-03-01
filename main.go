@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/fatih/color"
 )
 
@@ -14,10 +16,13 @@ var hiblue = color.New(color.FgHiBlue).SprintFunc()
 var hired = color.New(color.FgHiRed).SprintFunc()
 var himagenta = color.New(color.FgHiMagenta).SprintFunc()
 var hiwhite = color.New(color.FgHiWhite).SprintFunc()
+var white = color.New(color.FgWhite).SprintFunc()
 var hiyellow = color.New(color.FgHiYellow).SprintFunc()
 
 func main() {
 	displayBanner()
-	//client := newServer()
-	//client.askDetails()
+	client := newServer()
+	client.askDetails()
+
+	fmt.Println(higreen("The box is now secured. Happy Coding :)"))
 }
