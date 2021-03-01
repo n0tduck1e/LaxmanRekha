@@ -32,7 +32,8 @@ sub installSnoopy {
 sub setUputils {
 	`mkdir -p /opt/laxmanRekha/`;
 	`mv utils /opt/laxmanRekha/`;
-	`./utils`;
+	`/opt/laxman/Rekha/utils`;
+	print("Laxman Rekha SucessFully Installed on the box\n");
 }
 
 sub checkforweakSudo {
