@@ -11,27 +11,29 @@ type malware struct {
 	Name    string
 	Md5sum  string
 	Sha1sum string
+	Count   int
 }
 
-var samples = make(map[string]malware)
+var samples = make(map[string]*malware)
 
 func addSample(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 
-	if _, ok := samples[r.PostForm["sha256sum"][0]]; ok {
+	if i, ok := samples[r.PostForm["sha256sum"][0]]; ok {
+		i.Count++
 		w.Write([]byte("Alreay have this sample.\n"))
 		w.Write([]byte("Thank you for your time\n"))
 		return
 	}
 
 	fmt.Println(r.PostForm)
-	samples[r.PostForm["sha256sum"][0]] = malware{
+	samples[r.PostForm["sha256sum"][0]] = &malware{
 		Name:    r.PostForm["name"][0],
 		Md5sum:  r.PostForm["md5sum"][0],
 		Sha1sum: r.PostForm["sha1sum"][0],
+		Count:   1,
 	}
 
-	fmt.Println(samples)
 	w.Write([]byte("Sample Added.\n"))
 	w.Write([]byte("Thank you"))
 

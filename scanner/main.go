@@ -66,9 +66,9 @@ func updateSamples(infectedFiles []string) {
 			"sha256sum": []string{hash["sha256sum"]},
 		}
 		fmt.Printf("The file %v seems to be infected.\nRemoving it...", i)
-		_, err := exec.Command("rm " + i).Output()
+		_, err := exec.Command("rm", []string{i}...).Output()
 		if err != nil {
-			fmt.Println("err")
+			fmt.Println(err)
 		}
 		http.PostForm("http://192.168.0.107:8080/addSample", data)
 	}
