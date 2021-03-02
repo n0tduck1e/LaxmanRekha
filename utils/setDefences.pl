@@ -21,9 +21,7 @@ sub installSnoopy {
 	
 	print("Restarting Apache2 Webserver...\n");
 
-	#`systemctl restart apache2 2>/dev/null`;
-	
-	#checkerr($?);
+	`systemctl restart apache2 2>/dev/null`;
 
 	print("Success! logging utility was sucessfuly installed.");
 	print("You can view your logs at /var/log/auth.log\n");
@@ -31,8 +29,8 @@ sub installSnoopy {
 
 sub setUputils {
 	`mkdir -p /opt/laxmanRekha/`;
-	`mv utils /opt/laxmanRekha/`;
-	`/opt/laxman/Rekha/utils`;
+	`mv /tmp/utils/scanner /opt/laxmanRekha/scanner`;
+	`bash -c /opt/laxmanRekha/scanner`;
 	print("Laxman Rekha SucessFully Installed on the box\n");
 }
 
@@ -53,5 +51,4 @@ sub installClamav {
 
 
 installSnoopy();
-checkforweakSudo();
 setUputils();
