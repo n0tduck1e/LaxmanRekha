@@ -1,7 +1,7 @@
 # Cleaning things Up
 echo "Cleaning the laxmanRekha"
-cd laxmanRekha/ ; go clean
-cd ..
+go clean
+rm id_rsa*
 
 # Cleaning the mother ship
 echo "Cleaning the mothership"
@@ -14,4 +14,4 @@ cd scanner; go clean
 cd ..
 
 echo "Cleaning Moved Things"
-rm laxmanRekha/utils/scanner
+rm utils/scanner

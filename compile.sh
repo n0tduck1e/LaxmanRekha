@@ -1,8 +1,7 @@
 # Creating the LaxmanScanner
 
 echo "Building the laxmanRekha"
-cd laxmanRekha/ ; go build
-cd ..
+go build
 
 # Building the mother ship
 
@@ -18,4 +17,4 @@ cd ..
 
 # moving things to place
 echo "Moving things to place"
-mv scanner/scanner laxmanRekha/utils/
+mv scanner/scanner utils/
