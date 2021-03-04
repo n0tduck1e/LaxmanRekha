@@ -103,10 +103,10 @@ func (ssh *sshSess) OnBoxDefence() {
 	fmt.Println(green("[+] Tranfered files on the box"))
 	fmt.Println(green("[+] Installing AV on the box"))
 	fmt.Println(green("[+] Checking for misconfigurations"))
-	cmd = fmt.Sprintf("echo %v | sudo -S perl /tmp/utils/setDefences.pl", ssh.client.SSHPass)
-	fmt.Println(green("[+] All Seems Good :)"))
+	cmd = fmt.Sprintf("echo %v | sudo -S bash /tmp/utils/setDefences.sh", ssh.client.SSHPass)
 	output, _ := ssh.Cmd(cmd)
 	fmt.Println(output)
+	fmt.Println(green("[+] All Seems Good :)"))
 }
 
 func (ssh *sshSess) Cmd(cmd ...string) (string, error) {

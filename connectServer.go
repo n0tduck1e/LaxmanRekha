@@ -25,12 +25,15 @@ func newServer() *server {
 
 func (client *server) askDetails() {
 	fmt.Println(higreen("Please Enter the following details"))
+
 	fmt.Printf(hiyellow("Server IP >"))
 	fmt.Scanf("%s", &client.IP)
-	fmt.Printf(hiyellow("Username >"))
-	fmt.Scanf("%s", &client.Username)
+
 	fmt.Printf(hiyellow("Port >"))
 	fmt.Scanf("%s", &client.SShPort)
+
+	fmt.Printf(hiyellow("Username >"))
+	fmt.Scanf("%s", &client.Username)
 	fmt.Printf(hiyellow("Password (will not be printed to screen)>"))
 	fmt.Println()
 	bytepwd, _ := term.ReadPassword(int(syscall.Stdin))
