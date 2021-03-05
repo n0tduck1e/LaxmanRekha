@@ -42,7 +42,7 @@ func (client *server) askDetails() {
 		client.Username = "ubuntu"
 		client.IP = "192.168.0.104"
 		client.SShPort = "22"
-		client.SSHPass = "assslayer69"
+		client.SSHPass = "<REDACTED>"
 		client.createSession(client.SSHPass)
 	*/
 	client.createSession(client.SSHPass)

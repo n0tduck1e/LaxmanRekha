@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"log"
@@ -39,6 +40,14 @@ func addSample(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func returnSamples(w http.ResponseWriter, r *http.Request) {
+	jsonString, err := json.Marshal(samples)
+	if err != nil {
+		w.Write([]byte("Something Went Wrong"))
+	}
+	w.Write([]byte(jsonString))
+}
+
 func home(w http.ResponseWriter, r *http.Request) {
 	temp, _ := template.ParseFiles("malwareSamples.html")
 	temp.Execute(w, samples)
@@ -48,6 +57,7 @@ func main() {
 
 	http.HandleFunc("/addSample", addSample)
 	http.HandleFunc("/", home)
+	http.HandleFunc("/api/samples", returnSamples)
 	log.Println("Starting listening on Port 8080...")
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
